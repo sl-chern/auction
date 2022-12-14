@@ -1,0 +1,17 @@
+{
+    "port": 5000,
+    "jwtsecret": "bruh",
+    "dbConfig": {
+        "host": "localhost",
+        "user": "admin",
+        "password": "qwerty",
+        "database": "auction",
+        "dialect": "mysql",
+        "pool": {
+            "max": 5,
+            "min": 0,
+            "acquire": 30000,
+            "idle": 10000
+        }
+    }
+}
