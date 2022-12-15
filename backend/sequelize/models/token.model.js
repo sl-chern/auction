@@ -16,5 +16,9 @@ export default (sequelize) => {
 			allowNull: false,
 			type: DataTypes.UUID
 		},
+		end_date: {
+			allowNull: false,
+			type: DataTypes.DATE
+		}
 	});
 };

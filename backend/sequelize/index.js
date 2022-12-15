@@ -1,6 +1,7 @@
 import config from "config"
 import {Sequelize} from "sequelize"
-import applyExtraSetup from './extra-setup.js'
+import applyExtraSetup from "./extra-setup.js"
+import insertData from "./seeder.js"
 
 import betModel from './models/bet.model.js'
 import categoryModel from './models/category.model.js'
@@ -54,5 +55,8 @@ for (const modelDefiner of modelDefiners) {
 }
 
 applyExtraSetup(sequelize)
+
+// sequelize.sync({force: true})
+// .then(() => insertData(sequelize))
 
 export default sequelize

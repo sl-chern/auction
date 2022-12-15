@@ -1,6 +1,6 @@
 {
     "port": 5000,
-    "jwtsecret": "bruh",
+    "jwtsecret": "UwU",
     "dbConfig": {
         "host": "localhost",
         "user": "admin",

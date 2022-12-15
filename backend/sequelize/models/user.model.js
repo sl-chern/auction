@@ -29,7 +29,7 @@ export default (sequelize) => {
 			type: DataTypes.STRING
 		},
         image: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.TEXT
 		},
 	});

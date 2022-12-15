@@ -11,92 +11,164 @@ const applyExtraSetup = (sequelize) => {
     })
 
     category.hasMany(product, {
-        foreignKey: 'category_id'
+        foreignKey: {
+            name: 'category_id',
+            allowNull: false
+        }
     })
     product.belongsTo(category, {
-        foreignKey: 'category_id'
+        foreignKey: {
+            name: 'category_id',
+            allowNull: false
+        }
     })
 
     //Product relations
     product.hasMany(bet, {
-        foreignKey: 'product_id'
+        foreignKey: {
+            name: 'product_id',
+            allowNull: false
+        }
     })
     bet.belongsTo(product, {
-        foreignKey: 'product_id'
+        foreignKey: {
+            name: 'product_id',
+            allowNull: false
+        }
     })
 
     product.hasMany(order, {
-        foreignKey: 'product_id'
+        foreignKey: {
+            name: 'product_id',
+            allowNull: false
+        }
     })
     order.belongsTo(product, {
-        foreignKey: 'product_id'
+        foreignKey: {
+            name: 'product_id',
+            allowNull: false
+        }
     })
 
     //User relations
     user.hasMany(bet, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
     bet.belongsTo(user, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
 
     user.hasMany(product, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
     product.belongsTo(user, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
 
     user.hasMany(review, {
-        foreignKey: 'seller_id'
+        foreignKey: {
+            name: 'seller_id',
+            allowNull: false
+        }
     })
     review.belongsTo(user, {
-        foreignKey: 'seller_id'
+        foreignKey: {
+            name: 'seller_id',
+            allowNull: false
+        }
     })
 
     user.hasMany(review, {
-        foreignKey: 'buyer_id'
+        foreignKey: {
+            name: 'buyer_id',
+            allowNull: false
+        }
     })
     review.belongsTo(user, {
-        foreignKey: 'buyer_id'
+        foreignKey: {
+            name: 'buyer_id',
+            allowNull: false
+        }
     })
 
     user.hasMany(order, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
     order.belongsTo(user, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
 
     user.hasMany(token, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
     token.belongsTo(user, {
-        foreignKey: 'user_id'
+        foreignKey: {
+            name: 'user_id',
+            allowNull: false
+        }
     })
 
     //Role relations
     role.hasMany(user, {
-        foreignKey: 'role_id'
+        foreignKey: {
+            name: 'role_id',
+            allowNull: false
+        }
     })
     user.belongsTo(role, {
-        foreignKey: 'role_id'
+        foreignKey: {
+            name: 'role_id',
+            allowNull: false
+        }
     })
 
     //Delivery relations
     delivery.hasOne(order, {
-        foreignKey: 'delivery_id'
+        foreignKey: {
+            name: 'delivery_id',
+            allowNull: false
+        }
     })
     order.belongsTo(delivery, {
-        foreignKey: 'delivery_id'
+        foreignKey: {
+            name: 'delivery_id',
+            allowNull: false
+        }
     })
 
     //Post relations
     post.hasMany(delivery, {
-        foreignKey: 'post_id'
+        foreignKey: {
+            name: 'post_id',
+            allowNull: false
+        }
     })
     delivery.belongsTo(post, {
-        foreignKey: 'post_id'
+        foreignKey: {
+            name: 'post_id',
+            allowNull: false
+        }
     })
 }
 
