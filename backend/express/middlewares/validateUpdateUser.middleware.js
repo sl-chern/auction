@@ -2,15 +2,13 @@ import { body } from 'express-validator';
 
 const validateUser = [
     body('phone')
-        .exists()
-        .withMessage('Phone number is required')
+        .optional()
         .isLength({ min: 12 })
         .withMessage('Must be 12 chars long')
         .isLength({ max: 13 })
         .withMessage('Must be 13 chars long'),
     body('firstName')
-        .exists()
-        .withMessage('Your first name is required')
+        .optional()
         .custom(value => {
             const re = /^(([a-zA-Z'-]{1,30})|([а-яА-ЯЁёІіЇїҐґЄє'-]{1,30}))$/u
             return re.test(value);
@@ -19,8 +17,7 @@ const validateUser = [
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
     body('lastName')
-        .exists()
-        .withMessage('Your last name is required')
+        .optional()
         .custom(value => {
             const re = /^(([a-zA-Z'-]{1,30})|([а-яА-ЯЁёІіЇїҐґЄє'-]{1,30}))$/u
             return re.test(value);
@@ -29,20 +26,9 @@ const validateUser = [
         .isLength({ min: 3 })
         .withMessage('Must be at least 3 chars long'),
     body('email')
-        .exists()
-        .withMessage('Email is required')
+        .optional()
         .isEmail()
-        .withMessage('Must be a valid email'),
-    body("deviceId")
-        .exists()
-        .withMessage('Device Id is required')
-        .isUUID()
-        .withMessage('Device Id should be UUID'),
-    body("image")
-        .exists()
-        .withMessage('Image is required')
-        .isURL()
-        .withMessage('Image should be URL'),
+        .withMessage('Must be a valid email')
 ]
 
 export default validateUser

@@ -9,6 +9,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
+app.use(express.static('images'))
 
 app.use("/api/user", userRouter)
 app.use("/api/lot", lotRouter)

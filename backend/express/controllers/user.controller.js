@@ -3,11 +3,12 @@ import db from "../../sequelize/index.js"
 import jwt from "jsonwebtoken"
 import { v4 as uuid } from "uuid"
 import { validationResult } from "express-validator"
+import downloader from "image-downloader"
 
 export const authenticate = async (req, res) => {
     try {
         const errors = validationResult(req)
-        if (!errors.isEmpty()) 
+        if (!errors.isEmpty())
             return res.status(400).json({message: "User information is incorrect", errors: errors.array() })
 
         const users = await db.models.user.findAll({
@@ -19,15 +20,33 @@ export const authenticate = async (req, res) => {
         let user
 
         if(users.length === 0) {
-            const {firstName, lastName, email, phone} = req.body;
+            const {firstName, lastName, email, phone, image} = req.body
 
             user = await db.models.user.create({
                 first_name: firstName, 
                 last_name: lastName,
-                phone: phone,
+                phone,
                 email,
                 role_id: 1
             })
+
+            const options = {
+                url: image,
+                dest: `../../images/users/${user.id}.jpg`,
+            }
+
+            downloader.image(options)
+
+            await db.models.user.update({
+                image: `users/${user.id}`
+            }, 
+            {
+                where: {
+                    id: user.id
+                }
+            })
+
+            user.image = `${config.get("baseUrl")}:${config.get("port")}/users/${user.id}.jpg`
         }
         else
             user = users[0]
@@ -159,16 +178,24 @@ export const refresh = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
     try {
-        if(req.params.id == req.auth.id || req.auth.role_id == 2) {
-            console.log("fuck");
-            db.models.user.destroy({
-                where: {
-                    id: req.params.id,
-                }
-            })
+        const user = await db.models.user.findOne({
+            id: req.params.id,
+        })
+
+        if(user) {
+            if(req.params.id == req.auth.id || req.auth.role_id == 2) {
+                db.models.user.destroy({
+                    where: {
+                        id: req.params.id,
+                    }
+                })
+            }
+            else 
+                res.status(403).json()
         }
-        else 
-            res.status(403).json()
+        else
+            return res.status(404).json()
+
         res.status(200).json()
     }
     catch(error) {
@@ -179,16 +206,65 @@ export const deleteUser = async (req, res) => {
 
 export const patchUser = async (req, res) => {
     try {
-        if(req.params.id == req.auth.id || req.auth.role_id == 2) {
-            db.models.user.update(req.body, {
-                where: {
-                    id: req.params.id,
+        const errors = validationResult(req)
+        if (!errors.isEmpty())
+            return res.status(400).json({message: "User information is incorrect", errors: errors.array() })
+
+        const user = await db.models.user.findOne({
+            id: req.params.id,
+        })
+          
+        if(user) {
+            if(req.params.id == req.auth.id || req.auth.role_id == 2) {
+                let userInfo = {
+                    first_name: req.body.firstName,
+                    last_name: req.body.lastName,
+                    phone: req.body.phone,
+                    email: req.body.email,
+                    image: req.file.path.replace("images\\", "")
                 }
-            })
+
+                await db.models.user.update(userInfo, {
+                    where: {
+                        id: req.params.id,
+                    }
+                })
+
+                const user = await db.models.user.findOne({
+                    where: {
+                        id: req.params.id,
+                    }
+                })
+
+                
+                res.status(200).json(user)
+            }
+            else 
+                res.status(403).json()
         }
-        else 
-            res.status(403).json()
-        res.status(200).json()
+        else
+            return res.status(404).json()
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).json()
+    }
+}
+
+export const getUser = async (req, res) => {
+    try {
+        let user = await db.models.user.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+
+        if(!user)
+            return res.status(404).json()
+
+        user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/users/${user.id}.jpg`
+
+        res.status(200).json(user)
     }
     catch(error) {
         console.log(error)

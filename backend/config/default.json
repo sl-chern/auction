@@ -1,5 +1,6 @@
 {
     "port": 5000,
+    "baseUrl": "http://localhost",
     "jwtsecret": "UwU",
     "dbConfig": {
         "host": "localhost",
