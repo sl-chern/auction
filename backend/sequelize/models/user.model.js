@@ -32,5 +32,9 @@ export default (sequelize) => {
 			allowNull: true,
 			type: DataTypes.TEXT
 		},
+		punishment_points: {
+			allowNull: true,
+			type: DataTypes.INTEGER
+		}
 	});
 };

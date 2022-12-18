@@ -192,6 +192,7 @@ export const createProduct = async (req, res) => {
 
         let productInfo = {
             name,
+            start_date: currentPrice,
             cur_price: currentPrice,
             description,
             location,

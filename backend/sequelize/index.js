@@ -56,7 +56,7 @@ for (const modelDefiner of modelDefiners) {
 
 applyExtraSetup(sequelize)
 
-// sequelize.sync({force: true})
-// .then(() => insertData(sequelize))
+//sequelize.sync({force: true})
+//.then(() => insertData(sequelize))
 
 export default sequelize

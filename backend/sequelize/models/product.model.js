@@ -16,6 +16,10 @@ export default (sequelize) => {
 			allowNull: false,
 			type: DataTypes.DOUBLE(16,2)
 		},
+		start_price: {
+			allowNull: false,
+			type: DataTypes.DOUBLE(16,2)
+		},
 		description: {
 			allowNull: false,
 			type: DataTypes.TEXT

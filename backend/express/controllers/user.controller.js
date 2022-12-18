@@ -27,7 +27,8 @@ export const authenticate = async (req, res) => {
                 last_name: lastName,
                 phone,
                 email,
-                role_id: 1
+                role_id: 1,
+                punishment_points: 0
             })
 
             const options = {

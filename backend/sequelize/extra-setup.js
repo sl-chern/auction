@@ -170,6 +170,81 @@ const applyExtraSetup = (sequelize) => {
             allowNull: false
         }
     })
+
+    bet.addHook("beforeCreate", async (bet) => {
+        const userInBet = await user.findOne({
+            where: {
+                id: bet.user_id
+            }
+        })
+
+        if(userInBet.punishment_points > 3)
+            throw new Error("Ban", {cause: "bet error"})
+
+        const productInBet = await product.findOne({
+            where: {
+                id: bet.product_id
+            }
+        })
+
+        if(productInBet.cur_price >= bet.price)
+            throw new Error("Price in bet lower than current price of product", {cause: "bet error"})
+
+        await product.update({
+            cur_price: bet.price
+        }, 
+        {
+            where: {
+                id: bet.product_id
+            }
+        })
+    })
+
+    bet.beforeBulkDestroy(async (betObj) => {
+        const deletedBet = await bet.findOne({
+            where: {
+                id: betObj.where.id
+            },
+        })
+
+        let biggestBet = await bet.findAll({
+            where: {
+                product_id: deletedBet.product_id
+            },
+            order: [
+                ["price", "DESC"]
+            ]
+        })
+
+        biggestBet = biggestBet[1]
+
+        if(biggestBet) {
+            await product.update({
+                cur_price: biggestBet.price
+            },
+            {
+                where: {
+                    id: deletedBet.product_id
+                }
+            })
+        }
+        else {
+            const productObj = await product.findOne({
+                where: {
+                    id: deletedBet.product_id
+                }
+            })
+
+            await product.update({
+                cur_price: productObj.start_price
+            },
+            {
+                where: {
+                    id: deletedBet.product_id
+                }
+            })
+        }
+    })
 }
 
 export default applyExtraSetup

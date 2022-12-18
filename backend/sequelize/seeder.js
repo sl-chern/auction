@@ -123,11 +123,13 @@ const insertData = async (sequelize) => {
         phone: "+380997062027",
         email: "ivanov228.dm@gmail.com",
         password: "qwertyuiop",
-        role_id: 2
+        role_id: 2,
+        punishment_points: 0,
     })
 
     product.create({
 		name: "Книга 1",
+        start_price: 250,
 		cur_price: 250,
 		description: "qwertyu",
 		image: "qwertyu",
@@ -140,6 +142,7 @@ const insertData = async (sequelize) => {
 
     product.create({
 		name: "Книга 2",
+        start_price: 450,
 		cur_price: 450,
 		description: "qwertyu",
 		image: "qwertyu",
@@ -152,6 +155,7 @@ const insertData = async (sequelize) => {
 
     product.create({
 		name: "Книга 4",
+        start_price: 450,
 		cur_price: 450,
 		description: "qwertyu",
 		image: "qwertyu",
@@ -164,6 +168,7 @@ const insertData = async (sequelize) => {
 
     product.create({
 		name: "Ноутбук 1",
+        start_price: 350,
 		cur_price: 350,
 		description: "qwertyu",
 		image: "qwertyu",
