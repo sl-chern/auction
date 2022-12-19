@@ -40,5 +40,9 @@ export default (sequelize) => {
 			allowNull: false,
 			type: DataTypes.DATE
 		},
+		is_archived: {
+			allowNull: false,
+			type: DataTypes.BOOLEAN
+		}
 	});
 };

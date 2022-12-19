@@ -95,6 +95,9 @@ export const deleteProduct = async (req, res) => {
             }
         })
 
+        if(product.start_date > new Date())
+            return res.status(400).json({message: "You can't delete lot after auction is satrted"})
+
         if(product) {
             if(product.user_id == req.auth.id || req.auth.role_id == 2) {
                 await db.models.product.destroy({
@@ -129,6 +132,9 @@ export const updateProduct = async (req, res) => {
                 id: req.params.id
             }
         })
+
+        if(product.start_date > new Date())
+            return res.status(400).json({message: "You can't update lot after auction is satrted"})
 
         if(product) {
             if(product.user_id == req.auth.id || req.auth.role_id == 2) {
@@ -241,6 +247,29 @@ export const getCategories = async (req, res) => {
         })
 
         res.status(200).json(result)
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).json()
+    }
+}
+
+export const getBets = async (req, res) => {
+    try {
+        const bets = await db.models.bet.findAll({
+            where: {
+                product_id: req.params.id
+            },
+            attributes: ["id", "user_id", "price", "date"],
+            include: [
+                {
+                    model: db.models.user,
+                    attributes: ["first_name", "last_name"]
+                }
+            ]
+        })
+
+        res.status(200).json(bets)
     }
     catch(error) {
         console.log(error)

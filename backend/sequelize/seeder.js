@@ -127,6 +127,16 @@ const insertData = async (sequelize) => {
         punishment_points: 0,
     })
 
+    await user.create({
+		first_name: "В'ячеслав",
+		last_name: "Черногор",
+        phone: "+380997062027",
+        email: "ivanov228dm@gmail.com",
+        password: "qwertyuiop",
+        role_id: 2,
+        punishment_points: 0,
+    })
+
     product.create({
 		name: "Книга 1",
         start_price: 250,
@@ -137,7 +147,8 @@ const insertData = async (sequelize) => {
 		start_date: new Date(),
 		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
         user_id: 1,
-        category_id: await findByName(category, "Книги", "id")
+        category_id: await findByName(category, "Книги", "id"),
+        is_archived: false
     })
 
     product.create({
@@ -150,7 +161,8 @@ const insertData = async (sequelize) => {
 		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
 		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
         user_id: 1,
-        category_id: await findByName(category, "Книги", "id")
+        category_id: await findByName(category, "Книги", "id"),
+        is_archived: false
     })
 
     product.create({
@@ -163,7 +175,8 @@ const insertData = async (sequelize) => {
 		start_date: new Date(new Date().setDate(new Date().getDate() - 20)),
 		end_date: new Date(new Date().setDate(new Date().getDate() - 10)),
         user_id: 1,
-        category_id: await findByName(category, "Книги", "id")
+        category_id: await findByName(category, "Книги", "id"),
+        is_archived: true
     })
 
     product.create({
@@ -173,10 +186,11 @@ const insertData = async (sequelize) => {
 		description: "qwertyu",
 		image: "qwertyu",
 		location: "Київ",
-		start_date: new Date(new Date().setDate(new Date().getDate() + 3)),
-		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() - 4)),
         user_id: 1,
-        category_id: await findByName(category, "Ноутбуки", "id")
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
     })
 }
 

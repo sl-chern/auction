@@ -5,7 +5,8 @@ import {
     deleteProduct,
     updateProduct,
     createProduct,
-    getCategories
+    getCategories,
+    getBets
 } from "../controllers/lot.controller.js"
 import validateUpdateProduct from "../middlewares/validateUpdateProduct.middleware.js"
 import validateProduct from "../middlewares/validateProduct.middleware.js"
@@ -30,6 +31,7 @@ const router = Router()
 router.post("/", validateProduct, createProduct)
 router.post("/lots", getProducts)
 router.get("/categoies", getCategories)
+router.get("/:id/bets", getBets)
 router.route("/:id")
     .get(getProduct)
     .delete(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), deleteProduct)
