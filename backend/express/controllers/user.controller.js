@@ -4,35 +4,41 @@ import jwt from "jsonwebtoken"
 import { v4 as uuid } from "uuid"
 import { validationResult } from "express-validator"
 import downloader from "image-downloader"
+import axios from "axios"
 
-export const authenticate = async (req, res) => {
+export const authenticate = async (req, res, next) => {
     try {
-        const errors = validationResult(req)
-        if (!errors.isEmpty())
-            return res.status(400).json({message: "User information is incorrect", errors: errors.array() })
+        const { token, deviceId } = req.body
 
-        const users = await db.models.user.findAll({
-            where: {
-                email: req.body.email
+        const url = "https://www.googleapis.com/oauth2/v3/userinfo"
+
+        console.log(token, deviceId)
+
+        const response = await axios.get(url, {
+            headers: {
+            "Authorization": `Bearer ${token}`
             }
         })
 
-        let user
+        const { family_name, given_name, picture, email } = response.data
 
-        if(users.length === 0) {
-            const {firstName, lastName, email, phone, image} = req.body
+        let user = await db.models.user.findOne({
+            where: {
+                email: email
+            }
+        })
 
+        if(!user) {
             user = await db.models.user.create({
-                first_name: firstName, 
-                last_name: lastName,
-                phone,
+                first_name: given_name, 
+                last_name: family_name,
                 email,
                 role_id: 1,
                 punishment_points: 0
             })
 
             const options = {
-                url: image,
+                url: picture,
                 dest: `../../images/users/${user.id}.jpg`,
             }
 
@@ -49,20 +55,37 @@ export const authenticate = async (req, res) => {
 
             user.image = `${config.get("baseUrl")}:${config.get("port")}/users/${user.id}.jpg`
         }
-        else
-            user = users[0]
 
         const refreshToken = uuid()
 
         let endDate = new Date()
         endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
-        
-        await db.models.token.create({
-            user_id: user.id,
-            refresh_token: refreshToken,
-            device_id: req.body.deviceId,
-            end_date: endDate
+
+        const oldRefreshToken = db.models.token.findOne({
+            where: {
+                device_id: deviceId,
+                user_id: user.id,
+            }
         })
+
+        if(oldRefreshToken)
+            await db.models.token.update({
+                refresh_token: refreshToken,
+                end_date: endDate
+            },
+            {
+                where: {
+                    device_id: deviceId,
+                    user_id: user.id,
+                }
+            })
+        else
+            await db.models.token.create({
+                user_id: user.id,
+                refresh_token: refreshToken,
+                device_id: deviceId,
+                end_date: endDate
+            })
 
         const accessToken = jwt.sign(
             {
@@ -75,8 +98,8 @@ export const authenticate = async (req, res) => {
                 expiresIn: "1h"
             }
         )
-    
-        res.status(200).json({
+
+        const userInfo = {
             access_token: accessToken,
             refresh_token: refreshToken,
             user_info: {
@@ -88,11 +111,13 @@ export const authenticate = async (req, res) => {
                 image: user.image,
                 roleId: user.role_id
             }
-        })
+        }
+    
+        res.status(200).json(userInfo)
     }
     catch(error) {
         console.log(error)
-        res.status(500)
+        res.status(500).json({})
     }
 }
 
@@ -109,7 +134,7 @@ export const logout = async (req, res) => {
     }
     catch(error) {
         console.log(error)
-        res.status(500).json()
+        res.status(500).json({})
     }
 }
 
@@ -173,7 +198,7 @@ export const refresh = async (req, res) => {
     }
     catch(error) {
         console.log(error)
-        res.status(500).json()
+        res.status(500).json({})
     }
 }
 
@@ -201,7 +226,7 @@ export const deleteUser = async (req, res) => {
     }
     catch(error) {
         console.log(error)
-        res.status(500).json()
+        res.status(500).json({})
     }
 }
 
@@ -248,7 +273,7 @@ export const patchUser = async (req, res) => {
     }
     catch(error) {
         console.log(error)
-        res.status(500).json()
+        res.status(500).json({})
     }
 }
 
@@ -257,18 +282,19 @@ export const getUser = async (req, res) => {
         let user = await db.models.user.findOne({
             where: {
                 id: req.params.id
-            }
+            },
+            attributes: ["id", "first_name", "last_name", "email", "phone", "image", "role_id"]
         })
 
         if(!user)
             return res.status(404).json()
 
-        user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/users/${user.id}.jpg`
+        user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${user.image}`
 
         res.status(200).json(user)
     }
     catch(error) {
         console.log(error)
-        res.status(500).json()
+        res.status(500).json({})
     }
 }

@@ -21,14 +21,15 @@ const checkOrders = async () => {
             LIMIT 1
         `)
 
-        db.models.user.update({
-            punishment_points: sequelize.literal("punishment_points + 1")
-        },
-        {
-            where: {
-                id: userId[0][0].user_id
-            }
-        })
+        if(userId)
+            db.models.user.update({
+                punishment_points: sequelize.literal("punishment_points + 1")
+            },
+            {
+                where: {
+                    id: userId[0][0].user_id
+                }
+            })
     })
 
     await db.models.product.update({

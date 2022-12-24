@@ -27,7 +27,7 @@ const upload = multer({storage: storage})
 
 const router = Router()
 
-router.post("/authenticate", validateUser, authenticate)
+router.post("/authenticate", authenticate)
 router.post("/logout", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), logout)
 router.post("/refresh", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), refresh)
 router.route("/:id")

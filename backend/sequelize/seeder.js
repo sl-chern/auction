@@ -142,7 +142,7 @@ const insertData = async (sequelize) => {
         start_price: 250,
 		cur_price: 250,
 		description: "qwertyu",
-		image: "qwertyu",
+		image: "lots/qwerty.jpg",
 		location: "Київ",
 		start_date: new Date(),
 		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
@@ -156,7 +156,7 @@ const insertData = async (sequelize) => {
         start_price: 450,
 		cur_price: 450,
 		description: "qwertyu",
-		image: "qwertyu",
+		image: "lots/qwerty.jpg",
 		location: "Київ",
 		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
 		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
@@ -170,7 +170,7 @@ const insertData = async (sequelize) => {
         start_price: 450,
 		cur_price: 450,
 		description: "qwertyu",
-		image: "qwertyu",
+		image: "lots/qwerty.jpg",
 		location: "Київ",
 		start_date: new Date(new Date().setDate(new Date().getDate() - 20)),
 		end_date: new Date(new Date().setDate(new Date().getDate() - 10)),
@@ -184,10 +184,248 @@ const insertData = async (sequelize) => {
         start_price: 350,
 		cur_price: 350,
 		description: "qwertyu",
-		image: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() -10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 2",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
 		location: "Київ",
 		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
-		end_date: new Date(new Date().setDate(new Date().getDate() - 4)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 3",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 4",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 5",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 6",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 7",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 8",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 9",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() - 10)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 10",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 11",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 12",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 13",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 14",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 15",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 16",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 17",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
+        user_id: 1,
+        category_id: await findByName(category, "Ноутбуки", "id"),
+        is_archived: false
+    })
+
+    product.create({
+		name: "Ноутбук 18",
+        start_price: 350,
+		cur_price: 350,
+		description: "qwertyu",
+		image: "lots/qwerty.jpg",
+		location: "Київ",
+		start_date: new Date(new Date().setDate(new Date().getDate() + 1)),
+		end_date: new Date(new Date().setDate(new Date().getDate() + 10)),
         user_id: 1,
         category_id: await findByName(category, "Ноутбуки", "id"),
         is_archived: false

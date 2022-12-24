@@ -6,7 +6,9 @@ import {
     updateProduct,
     createProduct,
     getCategories,
-    getBets
+    getBets,
+    getLotsOrderedByStartDate,
+    getLotsOrderedByEndDate
 } from "../controllers/lot.controller.js"
 import validateUpdateProduct from "../middlewares/validateUpdateProduct.middleware.js"
 import validateProduct from "../middlewares/validateProduct.middleware.js"
@@ -36,5 +38,7 @@ router.route("/:id")
     .get(getProduct)
     .delete(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), deleteProduct)
     .patch(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), upload.single("image"), validateUpdateProduct, updateProduct)
+router.get("/lots/startOfAuction", getLotsOrderedByStartDate)
+router.get("/lots/endOfAuction", getLotsOrderedByEndDate)
 
 export default router

@@ -1,0 +1,31 @@
+@tailwind components;
+
+@layer components {
+    header {
+        @apply sticky h-[80px] bg-light-300 w-full dark:bg-dark-300 z-30
+    }
+
+    .header-content {
+        @apply flex flex-row h-[100%] justify-between items-center max-w-7xl mx-auto
+    }
+
+    .header-content__logo-block {
+        @apply cursor-pointer
+    }
+
+    .header-content__name-text {
+        @apply font-oswald text-4xl dark:text-light-300 text-dark-200 font-bold
+    }
+
+    .header-content__account-menu {
+        @apply relative
+    }
+
+    .header-content__options-buttons {
+        @apply absolute bottom-0 right-0 translate-y-[120%] w-full
+    }
+
+    .css-1na1n03-MuiFormLabel-root-MuiInputLabel-root {
+        @apply translate-x-[14px] !translate-y-[7px]
+    }
+}

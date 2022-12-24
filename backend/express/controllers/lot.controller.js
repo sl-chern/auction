@@ -2,6 +2,7 @@ import config from "config"
 import db from "../../sequelize/index.js"
 import { validationResult } from "express-validator"
 import { Op } from "sequelize"
+import Sequelize from "sequelize"
 
 export const getProducts = async (req, res) => {
     try {
@@ -12,7 +13,7 @@ export const getProducts = async (req, res) => {
         }
 
         if(name !== undefined)
-            filterObj.name = { [Op.like]: `%${name}` }
+            filterObj.name = { [Op.like]: `%${name}%` }
 
         if(category !== undefined) 
             filterObj.category_id = category
@@ -46,8 +47,6 @@ export const getProducts = async (req, res) => {
         products.forEach(item => 
             item.image = `${config.get("baseUrl")}:${config.get("port")}/${item.image}`
         )
-
-        console.log(products);
 
         res.status(200).json(products)
     }
@@ -270,6 +269,68 @@ export const getBets = async (req, res) => {
         })
 
         res.status(200).json(bets)
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).json()
+    }
+}
+
+export const getLotsOrderedByEndDate = async (req, res) => {
+    try {
+        let lots = await db.query(`
+            SELECT \`product\`.*, COUNT(\`bets\`.\`id\`) AS \`bets_count\` 
+            FROM 
+                (
+                    SELECT \`product\`.\`id\`, \`product\`.\`name\`, \`product\`.\`cur_price\`, \`product\`.\`description\`, \`product\`.\`image\`, \`product\`.\`location\`, \`product\`.\`start_date\`, \`product\`.\`end_date\` 
+                    FROM \`product\` AS \`product\` 
+                    WHERE \`product\`.\`end_date\` >= NOW() 
+                    ORDER BY \`product\`.\`start_date\` DESC 
+                    LIMIT 20
+                ) AS \`product\` 
+            LEFT OUTER JOIN \`bet\` AS \`bets\` ON \`product\`.\`id\` = \`bets\`.\`product_id\` 
+            GROUP BY \`product\`.\`id\`
+            ORDER BY \`product\`.\`end_date\`
+        `)
+
+        lots = lots[0]
+
+        lots.forEach(item => 
+            item.image = `${config.get("baseUrl")}:${config.get("port")}/${item.image}`
+        )
+
+        res.status(200).json(lots)
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).json()
+    }
+}
+
+export const getLotsOrderedByStartDate = async (req, res) => {
+    try {
+        let lots = await db.query(`
+            SELECT \`product\`.*, COUNT(\`bets\`.\`id\`) AS \`bets_count\` 
+            FROM 
+                (
+                    SELECT \`product\`.\`id\`, \`product\`.\`name\`, \`product\`.\`cur_price\`, \`product\`.\`description\`, \`product\`.\`image\`, \`product\`.\`location\`, \`product\`.\`start_date\`, \`product\`.\`end_date\` 
+                    FROM \`product\` AS \`product\` 
+                    WHERE \`product\`.\`start_date\` <= NOW() AND \`product\`.\`end_date\` >= NOW() 
+                    ORDER BY \`product\`.\`start_date\` DESC 
+                    LIMIT 20
+                ) AS \`product\` 
+            LEFT OUTER JOIN \`bet\` AS \`bets\` ON \`product\`.\`id\` = \`bets\`.\`product_id\` 
+            GROUP BY \`product\`.\`id\`
+            ORDER BY \`product\`.\`start_date\` DESC
+        `)
+
+        lots = lots[0]
+
+        lots.forEach(item => 
+            item.image = `${config.get("baseUrl")}:${config.get("port")}/${item.image}`
+        )
+
+        res.status(200).json(lots)
     }
     catch(error) {
         console.log(error)
