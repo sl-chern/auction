@@ -11,10 +11,12 @@ import { useDispatch } from 'react-redux'
 import { changeEmail, changeFirstName, changeId, changeImage, changeLastName, changePhone, changeRoleId } from "./store/reducers/UserSlice"
 import Home from './pages/Home/Home'
 import Catalog from './pages/Catalog/Catalog'
+import Lot from './pages/Lot/Lot'
+import User from './pages/User/User'
+import Order from './pages/Order/Order'
 
 function App() {
   const [deviceId, setDeviceId] = useLocalStorage("deviceId")
-  const [access_token,] = useLocalStorage("access_token")
 
   const userApi = useUserApi()
   const dispatch = useDispatch()
@@ -37,11 +39,13 @@ function App() {
       dispatch(changeRoleId(userInfo.role_id))
     }
 
-    if(access_token) {
-      const infoFromJwt = jwtDecode(access_token)
+    const accessToken = localStorage.getItem("access_token")
+
+    if(accessToken) {
+      const infoFromJwt = jwtDecode(accessToken)
       setUserInfo(infoFromJwt?.id)
     }
-  }, [access_token])
+  }, [localStorage.getItem("access_token")])
 
   return (
     <div className="flex flex-col justify-between min-h-screen bg-light-200 dark:bg-dark-100">
@@ -52,6 +56,9 @@ function App() {
           <Routes>
             <Route exact path='/' element={<Home />}/>
             <Route exact path='/catalog' element={<Catalog />}/>
+            <Route exact path='/lot/:id' element={<Lot />}/>
+            <Route exact path='/user/:id' element={<User />}/>
+            <Route exact path='/order/:id' element={<Order />}/>
             <Route exact path='*' element={<>404</>}/>
           </Routes>
         </main>

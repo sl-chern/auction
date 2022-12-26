@@ -1,9 +1,7 @@
 import React, { useRef } from 'react'
 import './Header.css'
 import { useNavigate } from "react-router-dom"
-import { TextField } from '@mui/material'
-import { CustomButton } from '../CustomMUIComponents/CustomComponents'
-import { styled } from '@mui/material/styles'
+import { CustomButton, LowCustomTextField } from '../CustomMUIComponents/CustomComponents'
 import { useGoogleLogin } from '@react-oauth/google'
 import useUserApi from '../../api/userApi'
 import { useSelector } from 'react-redux'
@@ -21,43 +19,6 @@ export default function Header() {
   const isUserLoading = useSelector(selectIsLoading)
 
   const userApi = useUserApi()
-
-  const CustomTextField = styled(TextField)(() => ({
-    '& label.Mui-focused': {
-      color: '#ECEAEA',
-    },
-    '& label': {
-      color: '#ECEAEA',
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: '#ECEAEA',
-    },
-    '& input': {
-      color: "#ECEAEA",
-      width: "350px",
-      padding: "8px"
-    },
-    '& .MuiFormLabel-root': {
-      transform: "translate(14px, 8px) scale(1);",
-      '&.Mui-focused': {
-        transform: "translate(14px, -9px) scale(0.75);",
-      },
-      '&.MuiFormLabel-filled': {
-        transform: "translate(14px, -9px) scale(0.75);",
-      }
-    },
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#ECEAEA',
-      },
-      '&:hover fieldset': {
-        borderColor: '#ECEAEA',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#ECEAEA',
-      },
-    },
-  }))
 
   const signIn = useGoogleLogin({
     onSuccess: async credentialResponse => userApi.authenticate(credentialResponse.access_token)
@@ -85,7 +46,7 @@ export default function Header() {
           <form onSubmit={e => handleSubmit(e)}>
             <Grid container spacing={1}>
               <Grid>
-                <CustomTextField 
+                <LowCustomTextField
                   label="Пошук" 
                   variant="outlined" 
                   color="primary"

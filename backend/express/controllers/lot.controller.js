@@ -3,14 +3,13 @@ import db from "../../sequelize/index.js"
 import { validationResult } from "express-validator"
 import { Op } from "sequelize"
 import Sequelize from "sequelize"
+import fs from "fs"
 
 export const getProducts = async (req, res) => {
     try {
-        const { name, category, minPrice, maxPrice, auctionStarted, userId } = req.body
+        const { name, category, minPrice, maxPrice, auctionStarted, userId, isArchived } = req.body
 
-        let filterObj = {
-            end_date: { [Op.gte]: new Date() }
-        }
+        let filterObj = {}
 
         if(name !== undefined)
             filterObj.name = { [Op.like]: `%${name}%` }
@@ -30,6 +29,11 @@ export const getProducts = async (req, res) => {
 
         if(userId)
             filterObj.user_id = userId
+
+        if(isArchived)
+            filterObj.is_archived = true
+        else
+            filterObj.is_archived = false
 
         let products = await db.models.product.findAll({
             where: filterObj,
@@ -64,17 +68,18 @@ export const getProduct = async (req, res) => {
             },
             include: [{
                 model: db.models.category,
-                attributes: ["name"]
+                attributes: ["id", "name"],
             },
             {
                 model: db.models.user,
                 attributes: ["id", "first_name", "last_name", "image"]
             }],
-            attributes: ["id", "name", "cur_price", "description", "image", "location", "start_date", "end_date"]
+            attributes: ["id", "name", "cur_price", "description", "image", "location", "start_date", "end_date", "start_price"]
         })
 
         if(product) {
             product.image = `${config.get("baseUrl")}:${config.get("port")}/${product.image}`
+            product.user.image = `${config.get("baseUrl")}:${config.get("port")}/${product.user.image}`
             res.status(200).json(product)
         }
         else
@@ -94,7 +99,7 @@ export const deleteProduct = async (req, res) => {
             }
         })
 
-        if(product.start_date > new Date())
+        if(new Date(product.start_date) < new Date())
             return res.status(400).json({message: "You can't delete lot after auction is satrted"})
 
         if(product) {
@@ -104,7 +109,7 @@ export const deleteProduct = async (req, res) => {
                         id: req.params.id
                     }
                 })
-                res.status(200).json(product)
+                res.status(200).json()
             }
             else
                 res.status(403).json()
@@ -132,7 +137,7 @@ export const updateProduct = async (req, res) => {
             }
         })
 
-        if(product.start_date > new Date())
+        if(new Date(product.start_date) < new Date())
             return res.status(400).json({message: "You can't update lot after auction is satrted"})
 
         if(product) {
@@ -145,7 +150,7 @@ export const updateProduct = async (req, res) => {
                     start_date: startDate,
                     end_date: endDate,
                     category_id: categoryId,
-                    image: req.file.path.replace("images\\", "")
+                    image: req.file?.path.replace("images\\", "") 
                 }
 
                 productInfo = Object.fromEntries(Object.entries(productInfo).filter(([_, v]) => v != null))
@@ -172,6 +177,7 @@ export const updateProduct = async (req, res) => {
                 })
 
                 updatedProduct.image = `${config.get("baseUrl")}:${config.get("port")}/${updatedProduct.image}`
+                updatedProduct.user.image = `${config.get("baseUrl")}:${config.get("port")}/${updatedProduct.user.image}`
 
                 res.status(200).json(updatedProduct)
             }
@@ -197,7 +203,7 @@ export const createProduct = async (req, res) => {
 
         let productInfo = {
             name,
-            start_date: currentPrice,
+            start_price: currentPrice,
             cur_price: currentPrice,
             description,
             location,
@@ -205,10 +211,24 @@ export const createProduct = async (req, res) => {
             end_date: endDate,
             category_id: categoryId,
             user_id: req.auth.id,
-            image: req.file.path.replace("images\\", "")
+            image: req.file.path.replace("images\\", ""),
+            is_archived: false
         }
 
-        await db.models.product.create(productInfo)
+        const product = await db.models.product.create(productInfo)
+
+        fs.rename(req.file.path, `${req.file.path.slice(0,12)}${product.id}.jpg`, err => console.log(err))
+
+        await db.models.product.update({
+            image: `${req.file.path.slice(0,12)}${product.id}.jpg`.replace("images\\", "")
+        },
+        {
+            where: {
+                id: product.id
+            }
+        })
+
+        res.status(200).json({product_id: product.id})
     }
     catch(error) {
         console.log(error)
@@ -263,9 +283,10 @@ export const getBets = async (req, res) => {
             include: [
                 {
                     model: db.models.user,
-                    attributes: ["first_name", "last_name"]
+                    attributes: ["id", "first_name", "last_name"]
                 }
-            ]
+            ],
+            order: [["date", "DESC"]]
         })
 
         res.status(200).json(bets)

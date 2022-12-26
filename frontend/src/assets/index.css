@@ -47,31 +47,73 @@
         @apply bg-dark-100
     }
 
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar {
+    *::-webkit-scrollbar {
         @apply w-[10px]
     }
     
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-track {
+    *::-webkit-scrollbar-track {
         @apply bg-light-300
     }
     
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-thumb {
+    *::-webkit-scrollbar-thumb {
         @apply rounded-[100vh] bg-dark-100
     }
     
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-thumb:hover {
+    *::-webkit-scrollbar-thumb:hover {
         @apply bg-dark-400
     }
 
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-thumb {
+    *::-webkit-scrollbar-thumb {
         @apply bg-light-300
     }
 
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-track {
+    *::-webkit-scrollbar-track {
         @apply bg-dark-100
     }
 
-    .MuiMenu-root .MuiPaper-root::-webkit-scrollbar-thumb:hover {
+    *::-webkit-scrollbar-thumb:hover {
         @apply bg-light-400
     }
 }
+
+.MuiPickersPopper-root {
+    transform: translate3d(606.4px, -248px, 0px) !important;
+}
+
+.MuiCalendarPicker-root {
+    background-color: #252525;
+}
+
+.MuiCalendarPicker-root .MuiPickersCalendarHeader-label {
+    color: #EAEAEA
+}
+
+.MuiCalendarPicker-root .MuiSvgIcon-root {
+    color: #EAEAEA
+}
+
+.MuiCalendarPicker-root .MuiTypography-root  {
+    color: #EAEAEA
+}
+
+.MuiCalendarPicker-root .PrivatePickersYear-root {
+    color: #EAEAEA
+}
+
+.MuiPickersDay-root:hover {
+    background-color: #1d1d1d !important;
+    color: #EAEAEA !important;
+}
+
+.MuiCalendarOrClockPicker-root {
+    background-color: #444444;
+}
+
+.MuiClockNumber-root {
+    color: #EAEAEA !important;
+}
+
+.MuiClockPicker-root .Mui-selected {
+    color: #252525 !important;
+}
+

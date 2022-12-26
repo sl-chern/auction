@@ -7,7 +7,6 @@ import {
     patchUser,
     getUser
 } from "../controllers/user.controller.js"
-import validateUser from "../middlewares/validateUser.middleware.js"
 import validateUpdateUser from "../middlewares/validateUpdateUser.middleware.js"
 import {expressjwt as jwt} from "express-jwt"
 import config from "config"
@@ -16,9 +15,8 @@ import multer from "multer"
 const storage = multer.diskStorage(
     {
         destination: 'images/users/',
-        filename: ( req, file, cb ) => {
-            console.log(file);
-            cb(null, `${req.params.id}.jpg`)
+        filename: ( req, file, callback ) => {
+            callback(null, `${req.params.id}.jpg`)
         }
     }
 )
@@ -29,7 +27,7 @@ const router = Router()
 
 router.post("/authenticate", authenticate)
 router.post("/logout", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), logout)
-router.post("/refresh", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), refresh)
+router.post("/refresh", refresh)
 router.route("/:id")
     .get(getUser)
     .patch(jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), validateUpdateUser, upload.single("image"), patchUser)

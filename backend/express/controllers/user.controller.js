@@ -12,11 +12,9 @@ export const authenticate = async (req, res, next) => {
 
         const url = "https://www.googleapis.com/oauth2/v3/userinfo"
 
-        console.log(token, deviceId)
-
         const response = await axios.get(url, {
             headers: {
-            "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`
             }
         })
 
@@ -45,23 +43,23 @@ export const authenticate = async (req, res, next) => {
             downloader.image(options)
 
             await db.models.user.update({
-                image: `users/${user.id}`
+                image: `users/${user.id}.jpg`
             }, 
             {
                 where: {
                     id: user.id
                 }
             })
-
-            user.image = `${config.get("baseUrl")}:${config.get("port")}/users/${user.id}.jpg`
         }
+        
+        user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${user.image}`
 
         const refreshToken = uuid()
 
         let endDate = new Date()
         endDate = new Date(endDate.setMonth(endDate.getMonth() + 1))
 
-        const oldRefreshToken = db.models.token.findOne({
+        const oldRefreshToken = await db.models.token.findOne({
             where: {
                 device_id: deviceId,
                 user_id: user.id,
@@ -140,9 +138,10 @@ export const logout = async (req, res) => {
 
 export const refresh = async (req, res) => {
     try {
+        console.log(req.body)
+
         const oldRefreshToken = await db.models.token.findAll({
             where: {
-                user_id: req.auth.id,
                 device_id: req.body.deviceId,
                 refresh_token: req.body.refreshToken
             }
@@ -154,7 +153,6 @@ export const refresh = async (req, res) => {
         if(oldRefreshToken[0].end_date < new Date()) {
             await db.models.token.destroy({
                 where: {
-                    user_id: req.auth.id,
                     device_id: req.body.deviceId,
                     refresh_token: req.body.refreshToken
                 }
@@ -175,7 +173,7 @@ export const refresh = async (req, res) => {
 
         const users = await db.models.user.findAll({
             where: {
-                id: req.auth.id
+                id: oldRefreshToken[0].user_id
             }
         })
 
@@ -237,18 +235,25 @@ export const patchUser = async (req, res) => {
             return res.status(400).json({message: "User information is incorrect", errors: errors.array() })
 
         const user = await db.models.user.findOne({
-            id: req.params.id,
+            where: {
+                id: req.params.id,
+            }
         })
           
         if(user) {
             if(req.params.id == req.auth.id || req.auth.role_id == 2) {
-                let userInfo = {
-                    first_name: req.body.firstName,
-                    last_name: req.body.lastName,
-                    phone: req.body.phone,
-                    email: req.body.email,
-                    image: req.file.path.replace("images\\", "")
-                }
+                let userInfo = {}
+
+                if(!!req.body.firstName)
+                    userInfo.first_name = req.body.firstName
+                if(!!req.body.lastName)
+                    userInfo.last_name = req.body.lastName
+                if(!!req.body.phone)
+                    userInfo.phone = req.body.phone
+                if(!!req.body.email)
+                    userInfo.email = req.body.email
+                if(req.file?.path)
+                    userInfo.image = req.file?.path.replace("images\\", "")
 
                 await db.models.user.update(userInfo, {
                     where: {
@@ -259,10 +264,12 @@ export const patchUser = async (req, res) => {
                 const user = await db.models.user.findOne({
                     where: {
                         id: req.params.id,
-                    }
+                    },
+                    attributes: ["id", "first_name", "last_name", "email", "phone", "image", "role_id"]
                 })
 
-                
+                user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${user.image}`
+
                 res.status(200).json(user)
             }
             else 

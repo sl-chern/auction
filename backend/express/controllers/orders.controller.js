@@ -1,7 +1,5 @@
-import config from "config"
 import db from "../../sequelize/index.js"
 import { validationResult } from "express-validator"
-import { Op } from "sequelize"
 
 export const createBet = async (req, res) => {
     try {
@@ -20,18 +18,18 @@ export const createBet = async (req, res) => {
             if(product.user_id === req.auth.id)
                 return res.status(400).json({message: "You can't create bet"})
 
-            await db.models.bet.create({
+            const bet = await db.models.bet.create({
                 price: price,
                 date: new Date(),
                 product_id: product_id,
                 user_id: req.auth.id
             })
+
+            res.status(200).json({ bet_id: bet.id})
         }
         else {
             return res.status(404).json()
         }
-    
-        res.status(200).json()
     }
     catch(error) {
         console.log(error)
@@ -48,6 +46,9 @@ export const deleteBet = async (req, res) => {
                 id: req.params.id
             }
         })
+
+        if(!bet)
+            return res.status(404).json({message: "Bet not found"})
 
         const biggestBet = await db.models.bet.findOne({
             where: {

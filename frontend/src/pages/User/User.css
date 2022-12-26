@@ -1,0 +1,19 @@
+@tailwind components;
+
+@layer components {
+    .modal__form {
+        @apply flex justify-center flex-col
+    }
+
+    .modal__drag-and-drop-block {
+        @apply w-full mx-auto rounded border-2 border-dashed border-dark-200 dark:border-light-300
+    }
+
+    .modal__drag-and-drop-label {
+        @apply w-full flex items-center text-center justify-center h-16 px-8 hover:cursor-pointer
+    }
+
+    .modal__img-settings {
+        @apply w-full flex flex-row justify-between mb-3
+    }
+}

@@ -15,13 +15,17 @@ import validateProduct from "../middlewares/validateProduct.middleware.js"
 import {expressjwt as jwt} from "express-jwt"
 import config from "config"
 import multer from "multer"
+import { v4 as uuid } from "uuid"
 
 const storage = multer.diskStorage(
     {
         destination: 'images/lots/',
         filename: ( req, file, cb ) => {
             console.log(file);
-            cb(null, `${req.params.id}.jpg`)
+            if(!!req.params.id)
+                cb(null, `${req.params.id}.jpg`)
+            else
+                cb(null, `${uuid()}.jpg`)
         }
     }
 )
@@ -30,7 +34,7 @@ const upload = multer({storage: storage})
 
 const router = Router()
 
-router.post("/", validateProduct, createProduct)
+router.post("/", jwt({secret: config.get('jwtsecret'), algorithms: ['HS256']}), upload.single("image"), validateProduct, createProduct)
 router.post("/lots", getProducts)
 router.get("/categoies", getCategories)
 router.get("/:id/bets", getBets)

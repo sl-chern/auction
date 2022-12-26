@@ -14,8 +14,8 @@ const validateUser = [
             return re.test(value);
         })
         .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
+        .isLength({ min: 2 })
+        .withMessage('Must be at least 2 chars long'),
     body('lastName')
         .optional()
         .custom(value => {
@@ -23,8 +23,8 @@ const validateUser = [
             return re.test(value);
         })
         .withMessage('Must be only alphabetical chars')
-        .isLength({ min: 3 })
-        .withMessage('Must be at least 3 chars long'),
+        .isLength({ min: 2 })
+        .withMessage('Must be at least 2 chars long'),
     body('email')
         .optional()
         .isEmail()

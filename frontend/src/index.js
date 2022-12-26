@@ -9,6 +9,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import theme from "./data/theme"
 import { Provider } from "react-redux"
 import { setupStore } from "./store/store"
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { LocalizationProvider } from '@mui/x-date-pickers'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
@@ -20,7 +22,9 @@ root.render(
       <Provider store={store}>
         <GoogleOAuthProvider clientId={process.env.REACT_APP_CLIENT_ID}>
           <ThemeProvider theme={theme}>
-            <App />
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <App />
+            </LocalizationProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
       </Provider>

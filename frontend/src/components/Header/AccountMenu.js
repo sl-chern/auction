@@ -3,9 +3,16 @@ import { Button, Avatar, ButtonGroup } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import useOutsideClickDetector from '../../hooks/useOutsideClickDetector'
 import useUserApi from '../../api/userApi'
+import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectId } from '../../store/reducers/UserSlice'
 
 export default function AccountMenu({image, firstName}) {
   const [optionsVisibility, setOptionsVisibility] = useState(false)
+
+  const userId = useSelector(selectId)
+
+  const navigate = useNavigate()
 
   const userApi = useUserApi()
 
@@ -45,7 +52,7 @@ export default function AccountMenu({image, firstName}) {
               orientation="vertical"
               aria-label="vertical contained button group"
             >
-              <CustomButton variant="contained" color="secondary" key="one">Профіль</CustomButton>
+              <CustomButton variant="contained" color="secondary" key="one" onClick={() => navigate(`/user/${userId}`)}>Профіль</CustomButton>
               <CustomButton variant="contained" color="secondary" key="two" onClick={() => userApi.logout()}>Вийти</CustomButton>
             </CustomButtonGroup>
           </div>

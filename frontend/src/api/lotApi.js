@@ -1,4 +1,3 @@
-import axios from "axios"
 import useInstance from "../hooks/useInstance"
 
 const useLotApi = () => {
@@ -32,7 +31,57 @@ const useLotApi = () => {
       const res = await instance.get(url)
 
       return res.data
-    }
+    },
+    getLot: async (id) => {
+      const url = `/lot/${id}`
+
+      const res = await instance.get(url)
+
+      return res.data
+    },
+    getBets: async (id) => {
+      const url = `/lot/${id}/bets`
+
+      const res = await instance.get(url)
+
+      return res.data
+    },
+    createBet: async (data) => {
+      const url = "/order/bet"
+
+      const res = await instance.post(url, JSON.stringify(data))
+
+      return res
+    },
+    createLot: async (data) => {
+      const url = "lot"
+
+      const res = await instance.post(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      })
+
+      return res.data
+    },
+    updateLot: async (data, id) => {
+      const url = `lot/${id}`
+
+      const res = await instance.patch(url, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      })
+
+      return res.data
+    },
+    deleteLot: async (id) => {
+      const url = `lot/${id}`
+
+      const res = await instance.delete(url)
+
+      return res.data
+    },
   }
 
   return lotApi

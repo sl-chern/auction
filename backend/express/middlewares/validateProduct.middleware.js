@@ -6,7 +6,7 @@ const validateProduct = [
         .withMessage('Name is required')
         .isString()
         .withMessage('Name should be string'),
-    body("curPrice")
+    body("currentPrice")
         .exists()
         .withMessage('Price is required')
         .isFloat()
@@ -23,14 +23,10 @@ const validateProduct = [
         .withMessage('Location should be string'),
     body("startDate")
         .exists()
-        .withMessage('Start date is required')
-        .isDate()
-        .withMessage('Start date should be date'),
+        .withMessage('Start date is required'),
     body("endDate")
         .exists()
-        .withMessage('End date is required')
-        .isDate()
-        .withMessage('End date should be date'),
+        .withMessage('End date is required'),
 ]
 
 export default validateProduct

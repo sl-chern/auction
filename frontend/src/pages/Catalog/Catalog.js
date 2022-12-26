@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import './Catalog.css'
-import { Box, CardContent, FormControl, OutlinedInput } from '@mui/material'
+import { Box, CardContent } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import useLotApi from '../../api/lotApi'
 import { useSearchParams } from 'react-router-dom'
-import { CustomCard, CustomMenuItem, CustomSelect, CustomTypography, CustomTextField, CustomFormControlLabel, CustomCheckbox, CustomButton } from '../../components/CustomMUIComponents/CustomComponents'
-import { current } from '@reduxjs/toolkit'
+import { CustomCard, CustomMenuItem, CustomTypography, CustomTextField, CustomFormControlLabel, CustomCheckbox, CustomButton } from '../../components/CustomMUIComponents/CustomComponents'
 import Lot from '../../components/Lot/Lot'
+import CategorySelect from '../../components/CategorySelect/CategorySelect'
 
 export default function Catalog() {
   const [categories, setCategories] = useState()
@@ -163,19 +163,11 @@ export default function Catalog() {
               <CustomTypography variant="h5" component="div">Фільтри</CustomTypography>
               <Box sx={{mt: 1}}>
                 <CustomTypography variant="subtitle1" component="div">Категорія</CustomTypography>
-                <FormControl sx={{width: "100%"}}>
-                  <CustomSelect
-                    value={selectedCategory}
-                    displayEmpty
-                    onChange={e => setSelectedCategory(e.target.value)}
-                    input={<OutlinedInput />}
-                  >
-                    <CustomMenuItem value="">
-                      Обрати
-                    </CustomMenuItem>
-                    {selectItems.current}
-                  </CustomSelect>
-                </FormControl>
+                <CategorySelect 
+                  value={selectedCategory}
+                  setValue={setSelectedCategory}
+                  setLoading={setCategoryLoading}
+                />
               </Box>
               <Box sx={{mt: 1}}>
                 <CustomTypography sx={{mb: 0.7}} variant="subtitle1" component="div">Ціна</CustomTypography>
