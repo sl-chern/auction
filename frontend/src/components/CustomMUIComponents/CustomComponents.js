@@ -1,4 +1,19 @@
-import { Card, MenuItem, Select, TextField, Typography, FormControlLabel, Checkbox, Button, Link, TableCell, Tab, Divider, Dialog } from '@mui/material'
+import { 
+  Card, 
+  MenuItem, 
+  Select, 
+  TextField, 
+  Typography, 
+  FormControlLabel, 
+  Checkbox, 
+  Button, 
+  Link, 
+  TableCell, 
+  Tab, 
+  Divider, 
+  Dialog ,
+  CardMedia
+} from '@mui/material'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import { styled } from '@mui/material/styles'
 
@@ -160,4 +175,8 @@ export const CustomDateTimePicker = styled(DateTimePicker)(() => ({
   "& .MuiSvgIcon-root": {
     color: "#ECEAEA",
   }
+}))
+
+export const CustomCardMedia = styled(CardMedia)(() => ({
+  aspectRatio: "1 / 1"
 }))

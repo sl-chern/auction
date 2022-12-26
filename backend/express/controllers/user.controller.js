@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid"
 import { validationResult } from "express-validator"
 import downloader from "image-downloader"
 import axios from "axios"
+import jwtDecode from "jwt-decode"
 
 export const authenticate = async (req, res, next) => {
     try {
@@ -138,8 +139,6 @@ export const logout = async (req, res) => {
 
 export const refresh = async (req, res) => {
     try {
-        console.log(req.body)
-
         const oldRefreshToken = await db.models.token.findAll({
             where: {
                 device_id: req.body.deviceId,
@@ -286,6 +285,10 @@ export const patchUser = async (req, res) => {
 
 export const getUser = async (req, res) => {
     try {
+        const jwt = req.headers?.authorization.slice(7)
+
+        let orders
+        
         let user = await db.models.user.findOne({
             where: {
                 id: req.params.id
@@ -295,10 +298,39 @@ export const getUser = async (req, res) => {
 
         if(!user)
             return res.status(404).json()
+        
+        if(!!jwt) {
+            const { id } = jwtDecode(jwt)
+            
+            orders = await db.models.order.findAll({
+                where: {
+                    user_id: id
+                },
+                include: [
+                    {
+                        model: db.models.product,
+                        where: {
+                            user_id: user.id
+                        }
+                    }
+                ]
+            })
+        }
 
-        user.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${user.image}`
+        const userInfo = {
+            id: user.id, 
+            first_name: user.first_name, 
+            last_name: user.last_name, 
+            email: user.email, 
+            phone: user.phone, 
+            image: user.image, 
+            role_id: user.role_id,
+            review: orders.length > 0 ? true : false
+        }
 
-        res.status(200).json(user)
+        userInfo.image = user.image === null ? null : `${config.get("baseUrl")}:${config.get("port")}/${userInfo.image}`
+
+        res.status(200).json(userInfo)
     }
     catch(error) {
         console.log(error)

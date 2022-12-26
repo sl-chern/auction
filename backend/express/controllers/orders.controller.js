@@ -1,5 +1,6 @@
 import db from "../../sequelize/index.js"
 import { validationResult } from "express-validator"
+import config from "config"
 
 export const createBet = async (req, res) => {
     try {
@@ -138,6 +139,15 @@ export const createOrder = async (req, res) => {
             delivery_id: delivery.id
         })
 
+        await db.models.product.update({
+            is_archived: true,
+        }, 
+        {
+            where: {
+                id: productId
+            }
+        })
+
         res.status(200).json()
     }
     catch(error) {
@@ -163,16 +173,21 @@ export const getOrders = async (req, res) => {
                     },
                     {
                         model: db.models.product,
-                        attributes: ["id", "name", "cur_price", "description", "image", "location", "start_date", "end_date"],
+                        attributes: ["id", "name", "cur_price", "description", "image", "location", "start_date", "end_date", "user_id"],
                         where: {
                             user_id: req.auth.id
                         },
                     },
                     {
                         model: db.models.user,
-                        attributes: ["first_name", "last_name", "phone", "email"]
+                        attributes: ["id", "first_name", "last_name", "phone", "email", "image"]
                     }
                 ]
+            })
+
+            orders.forEach(item => {
+                item.product.image = `${config.get("baseUrl")}:${config.get("port")}/${item.product.image}`
+                item.user.image = `${config.get("baseUrl")}:${config.get("port")}/${item.user.image}`
             })
             
             res.status(200).json(orders)
@@ -199,11 +214,16 @@ export const getOrders = async (req, res) => {
                         include: [
                             {
                                 model: db.models.user,
-                                attributes: ["first_name", "last_name", "phone", "email"]
+                                attributes: ["id", "first_name", "last_name", "phone", "email", "image"]
                             }
                         ]
                     }
                 ]
+            })
+
+            orders.forEach(item => {
+                item.product.image = `${config.get("baseUrl")}:${config.get("port")}/${item.product.image}`
+                item.product.user.image = `${config.get("baseUrl")}:${config.get("port")}/${item.product.user.image}`
             })
             
             res.status(200).json(orders)
@@ -302,12 +322,10 @@ export const updateReview = async (req, res) => {
 
 export const deleteReview = async (req, res) => {
     try {
-        const { sellerId } = req.body
-
         const review = await db.models.review.findOne({
             where: {
                 buyer_id: req.auth.id,
-                seller_id: sellerId
+                seller_id: req.params.id
             }
         })
 
@@ -315,7 +333,7 @@ export const deleteReview = async (req, res) => {
             await db.models.review.destroy({
                 where: {
                     buyer_id: req.auth.id,
-                    seller_id: sellerId
+                    seller_id: req.params.id
                 }
             })
         }
@@ -323,6 +341,33 @@ export const deleteReview = async (req, res) => {
             return res.status(404).json({message: "Review not found"})
     
         res.status(200).json()
+    }
+    catch(error) {
+        console.log(error)
+        res.status(500).json()
+    }
+}
+
+export const getReviews = async (req, res) => {
+    try {
+        const reviews = await db.models.review.findAll({
+            where: {
+                seller_id: req.params.id
+            },
+            include: [
+                {
+                    model: db.models.user,
+                    attributes: ["id", "first_name", "last_name", "image"]
+                }
+            ],
+            order: [["createdAt", "DESC"]]
+        })
+
+        reviews.forEach(item => {
+            item.user.image = `${config.get("baseUrl")}:${config.get("port")}/${item.user.image}`
+        })
+    
+        res.status(200).json(reviews)
     }
     catch(error) {
         console.log(error)

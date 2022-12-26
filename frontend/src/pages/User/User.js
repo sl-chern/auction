@@ -12,6 +12,10 @@ import useLotApi from '../../api/lotApi'
 import LotsList from './LotsList'
 import UserSettings from './UserSettings'
 import LotCreatingModal from './LotCreatingModal'
+import useOrderApi from '../../api/orderApi'
+import OrdersList from './OrdersList'
+import CreateCommentModal from './CommentModal'
+import ReviewsList from './ReviewsList'
 
 export default function User() {
   const { id } = useParams()
@@ -20,6 +24,7 @@ export default function User() {
 
   const userApi = useUserApi()
   const lotApi = useLotApi()
+  const orderApi = useOrderApi()
 
   const [user, setUser] = useState()
 
@@ -28,8 +33,14 @@ export default function User() {
   const [lots, setLots] = useState()
   const [archivedLots, setArchivedLots] = useState()
 
+  const [deliveredOrders, setDeliveredOrders] = useState()
+  const [receivedOrders, setReceivedOrders] = useState()
+
+  const [reviews, setReviews] = useState()
+
   const [visibility, setVisibility] = useState(false)
   const [visibilityOfCreating, setVisibilityOfCreating] = useState(false)
+  const [visibilityOfReview, setVisibilityOfReview] = useState(false)
 
   const fetchUser = async () => {
     const res = await userApi.getUser(id)
@@ -41,14 +52,27 @@ export default function User() {
     setData(res)
   }
 
+  const fetchOrders = async (type, setData) => {
+    const res = await orderApi.getOrders(type)
+    setData(res)
+  }
+
+  const fetchReviews = async () => {
+    const res = await orderApi.getReviews(id)
+    setReviews(res)
+  }
+
   useEffect(() => {
     fetchUser()
     fetchLots({userId: id}, setLots)
     fetchLots({userId: id, isArchived: true}, setArchivedLots)
+    fetchOrders("delivered", setDeliveredOrders)
+    fetchOrders("received", setReceivedOrders)
+    fetchReviews()
   }, [id])
 
   const handleChange = (event, newValue) => {
-    setCurrentTab(newValue);
+    setCurrentTab(newValue)
   }
 
   return (
@@ -56,8 +80,17 @@ export default function User() {
       <Grid container spacing={4}>
         <Grid xs={2.5}>
           <Avatar sx={{ width: "100%", height: "auto" }} variant="rounded" src={user?.image}/>
-          <CustomButton sx={{width: "100%", mt: 2}} variant="contained" color="primary" onClick={() => setVisibility(true)}>Редагування профілю</CustomButton>
-          <CustomButton sx={{width: "100%", mt: 2}} variant="contained" color="primary" onClick={() => setVisibilityOfCreating(true)}>Створити лот</CustomButton>
+          {
+            userId === user?.id &&
+              <>
+                <CustomButton sx={{width: "100%", mt: 2}} variant="contained" color="primary" onClick={() => setVisibility(true)}>Редагування профілю</CustomButton>
+                <CustomButton sx={{width: "100%", mt: 2}} variant="contained" color="primary" onClick={() => setVisibilityOfCreating(true)}>Створити лот</CustomButton>
+              </>
+          }
+          {
+            user?.review &&
+              <CustomButton sx={{width: "100%", mt: 2}} variant="contained" color="primary" onClick={() => setVisibilityOfReview(true)}>Залишити відгук</CustomButton>
+          }
         </Grid>
         <Grid xs={9.5}>
           <CustomTypography variant="h3" component="div">{user?.first_name} {user?.last_name}</CustomTypography>
@@ -74,10 +107,12 @@ export default function User() {
                         <CustomTab label="Лоти (в архіві)" value="2" />
                         <CustomTab label="Замовлення (відправник)" value="3" />
                         <CustomTab label="Замовлення (покупець)" value="4" />
+                        <CustomTab label="Выдгуки" value="5" />
                       </TabList>
                     :
                       <TabList onChange={handleChange}>
                         <CustomTab label="Лоти" value="1" />
+                        <CustomTab label="Відгуки" value="5" />
                       </TabList>
                   } 
               </Box>
@@ -87,8 +122,15 @@ export default function User() {
               <TabPanel sx={{px: 0}} value="2">
                 <LotsList lots={archivedLots} isArchived={true}/>
               </TabPanel>
-              <TabPanel sx={{px: 0}} value="3">Item Three</TabPanel>
-              <TabPanel sx={{px: 0}} value="4">Item Three</TabPanel>
+              <TabPanel sx={{px: 0}} value="3">
+                <OrdersList orders={deliveredOrders} delivery={true}/>
+              </TabPanel>
+              <TabPanel sx={{px: 0}} value="4">
+                <OrdersList orders={receivedOrders}/>
+              </TabPanel>
+              <TabPanel sx={{px: 0}} value="5">
+                <ReviewsList reviews={reviews} setReviews={setReviews}/>
+              </TabPanel>
             </TabContext>
           </Box>
           <UserSettings 
@@ -100,6 +142,12 @@ export default function User() {
           <LotCreatingModal
             visibility={visibilityOfCreating} 
             setVisibility={setVisibilityOfCreating} 
+          />
+          <CreateCommentModal
+            visibility={visibilityOfReview} 
+            setVisibility={setVisibilityOfReview} 
+            id={id}
+            requestMethod={orderApi.createReview}
           />
         </Grid>
       </Grid>

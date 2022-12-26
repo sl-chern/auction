@@ -20,8 +20,6 @@ export default function Lot({id, image, name, price, betsCount = 0, endDate, isA
     padding: 0
   }))
 
-  console.log(image);
-
   return (
     <a href={`/lot/${id}`}>
       <div className="lot-component">
@@ -42,7 +40,7 @@ export default function Lot({id, image, name, price, betsCount = 0, endDate, isA
             </Grid>
             <CustomTypography sx={{mt: 0.5}} variant="body2" component="div">
               {
-                isArchived ? 
+                new Date(endDate) < new Date() ? 
                   `Закінчився: ${getStringDate(endDate).slice(0, -5)}`
                 :
                   `До кінця: ${getRemainingDate(endDate)}`
